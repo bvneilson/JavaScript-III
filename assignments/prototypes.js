@@ -70,6 +70,8 @@ Humanoid.prototype.greet = function () {
   return `${this.name} offers a greeting in ${this.language}.`;
 }
 
+// === Hero ===
+
 function Hero (attrs) {
   Humanoid.call(this, attrs);
 }
@@ -112,6 +114,8 @@ Hero.prototype.attack = function (enemy) {
   }
 }
 
+// === Villain ===
+
 function Villain (attrs) {
   Humanoid.call(this, attrs);
 }
@@ -153,9 +157,14 @@ Villain.prototype.attack = function (enemy) {
     return "ERROR";
   }
 }
+
+// === Random number generator ===
+
 function randomNum (num) {
   return Math.floor(Math.random() * num);
 }
+
+// === Duel ===
 
 function duel (hero, villain) {
   let first;
