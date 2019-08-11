@@ -1,13 +1,13 @@
 /*
   Object oriented design is commonly used in video games.  For this part of the assignment you will be implementing several constructor functions with their correct inheritance hierarchy.
 
-  In this file you will be creating three constructor functions: GameObject, CharacterStats, Humanoid.  
+  In this file you will be creating three constructor functions: GameObject, CharacterStats, Humanoid.
 
   At the bottom of this file are 3 objects that all end up inheriting from Humanoid.  Use the objects at the bottom of the page to test your constructor functions.
-  
+
   Each constructor function has unique properties and methods that are defined in their block comments below:
 */
-  
+
 /*
   === GameObject ===
   * createdAt
@@ -15,6 +15,16 @@
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
+function GameObject(attrs) {
+  this.createdAt = attrs.createdAt;
+  this.name = attrs.name;
+  this.dimensions = attrs.dimensions;
+  this.alive = true;
+}
+GameObject.prototype.destroy = function () {
+  return `${this.name} was removed from the game.`;
+}
+
 
 /*
   === CharacterStats ===
@@ -22,6 +32,21 @@
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+function CharacterStats(attrs) {
+  GameObject.call(this, attrs);
+  this.healthPoints = attrs.healthPoints;
+}
+CharacterStats.prototype = Object.create(GameObject.prototype);
+CharacterStats.prototype.takeDamage = function () {
+  return `${this.name} took damage.`;
+}
+CharacterStats.prototype.sayHealthPoints = function () {
+  if (this.healthPoints > 0) {
+    console.log(`${this.name} is at ${this.healthPoints} health points.`);
+  } else {
+    this.alive = false;
+  }
+}
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -32,7 +57,144 @@
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
- 
+function Humanoid(attrs) {
+  CharacterStats.call(this, attrs);
+  this.team = attrs.team;
+  this.weapons = attrs.weapons;
+  this.spells = attrs.spells;
+  this.curses = attrs.curses;
+  this.language = attrs.language;
+}
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+Humanoid.prototype.greet = function () {
+  return `${this.name} offers a greeting in ${this.language}.`;
+}
+
+function Hero (attrs) {
+  Humanoid.call(this, attrs);
+}
+Hero.prototype = Object.create(Humanoid.prototype);
+Hero.prototype.attack = function (enemy) {
+  let attack = decideAttack();
+  if (attack === 0) {
+    if (criticalHit() === 3) {
+      damage = 15;
+      message = `Critical Hit!`
+    } else {
+      damage = 10;
+      message = '';
+    }
+    enemy.healthPoints -= damage;
+    return `${this.name} struck ${enemy.name} with the ${this.weapons[0]} of Light! ${message} ${enemy.name} lost ${damage} health points.`;
+  } else if (attack === 1) {
+    if (criticalHit() === 1) {
+      damage = 10;
+      message = `Critical Hit!`
+    } else {
+      damage = 7;
+      message = '';
+    }
+    enemy.healthPoints -= damage;
+    return `${this.name} struck ${enemy.name} with the ${this.weapons[1]} of Truth! ${message} ${enemy.name} lost ${damage} health points.`;
+  } else if (attack === 2) {
+    if (criticalHit() === 5) {
+      damage = 20;
+      message = `Critical Hit!`
+    } else {
+      damage = 15;
+      message = '';
+    }
+    enemy.healthPoints -= damage;
+    return `${this.name} cast a ${this.spells[0]} spell at ${enemy.name}! ${message} ${enemy.name} lost ${damage} health points.`;
+  } else {
+    console.log(attack);
+    return "ERROR";
+  }
+}
+
+function Villain (attrs) {
+  Humanoid.call(this, attrs);
+}
+Villain.prototype = Object.create(Humanoid.prototype);
+Villain.prototype.attack = function (enemy) {
+  let attack = decideAttack();
+  if (attack === 0) {
+    if (criticalHit() === 2) {
+      damage = 15;
+      message = `Critical Hit!`
+    } else {
+      damage = 10;
+      message = '';
+    }
+    enemy.healthPoints -= damage;
+    return `${this.name} struck ${enemy.name} with the Fire ${this.weapons[0]}! ${message} ${enemy.name} lost ${damage} health points.`;
+  } else if (attack === 1) {
+    if (criticalHit() === 2) {
+      damage = 10;
+      message = `Critical Hit!`
+    } else {
+      damage = 7;
+      message = '';
+    }
+    enemy.healthPoints -= damage;
+    return `${this.name} struck ${enemy.name} with the Poison ${this.weapons[1]}! ${message} ${enemy.name} lost ${damage} health points.`;
+  } else if (attack === 2) {
+    if (criticalHit() === 2) {
+      damage = 20;
+      message = `Critical Hit!`
+    } else {
+      damage = 15;
+      message = '';
+    }
+    enemy.healthPoints -= damage;
+    return `${this.name} put a ${this.curses[0]} curse on ${enemy.name}! ${message} ${enemy.name} lost ${damage} health points.`;
+  } else {
+    console.log(attack);
+    return "ERROR";
+  }
+}
+
+function criticalHit () {
+  return Math.floor(Math.random() * 5);
+}
+function decideAttack () {
+  return Math.floor(Math.random() * 3);
+}
+function coinFlip () {
+  return Math.floor(Math.random() * 2);
+}
+
+function duel (hero, villain) {
+  let first;
+  let second;
+  if (coinFlip() === 0) {
+    first = hero;
+    second = villain;
+    console.log()
+  } else {
+    first = villain;
+    second = hero;
+  }
+  console.log(`-----${first.name} VS ${second.name}-----`);
+  do {
+    if (first.alive) {
+      console.log(first.attack(second));
+      second.sayHealthPoints();
+    }
+    if (second.alive) {
+      console.log(second.attack(first));
+      first.sayHealthPoints();
+    }
+  } while (hero.alive && villain.alive);
+  if (hero.alive) {
+    console.log(`${villain.name} has been destroyed! ${hero.name} has triumphed!`);
+    console.log(villain.destroy());
+  } else {
+    console.log(`${hero.name} has been slain! ${villain.name} is the victor!`);
+    console.log(hero.destroy());
+  }
+}
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -41,7 +203,6 @@
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -92,6 +253,46 @@
     language: 'Elvish',
   });
 
+  const swifthallow = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 4,
+      width: 4,
+      height: 4,
+    },
+    healthPoints: 50,
+    name: 'Swifthallow',
+    team: 'Dwarves',
+    weapons: [
+      'Battle Axe',
+      'Short Sword',
+    ],
+    spells: [
+      'Fire'
+    ],
+    language: 'Dwarvish',
+  });
+
+  const bloodscar = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 4,
+      width: 4,
+      height: 4,
+    },
+    healthPoints: 50,
+    name: 'Bloodscar',
+    team: 'Goblins',
+    weapons: [
+      'Arrow',
+      'Dagger',
+    ],
+    curses: [
+      'Blinding',
+    ],
+    language: 'Goblin',
+  });
+
   console.log(mage.createdAt); // Today's date
   console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
   console.log(swordsman.healthPoints); // 15
@@ -102,9 +303,13 @@
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-*/
 
-  // Stretch task: 
-  // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
+  // Hero v Villain duel
+  console.log('----------HERO BATTLE!----------');
+  duel(swifthallow, bloodscar);
+
+
+  // Stretch task:
+  // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
