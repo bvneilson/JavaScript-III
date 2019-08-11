@@ -75,9 +75,9 @@ function Hero (attrs) {
 }
 Hero.prototype = Object.create(Humanoid.prototype);
 Hero.prototype.attack = function (enemy) {
-  let attack = decideAttack();
+  let attack = randomNum(3);
   if (attack === 0) {
-    if (criticalHit() === 3) {
+    if (randomNum(5) === 3) {
       damage = 15;
       message = `Critical Hit!`
     } else {
@@ -87,7 +87,7 @@ Hero.prototype.attack = function (enemy) {
     enemy.healthPoints -= damage;
     return `${this.name} struck ${enemy.name} with the ${this.weapons[0]} of Light! ${message} ${enemy.name} lost ${damage} health points.`;
   } else if (attack === 1) {
-    if (criticalHit() === 1) {
+    if (randomNum(5) === 1) {
       damage = 10;
       message = `Critical Hit!`
     } else {
@@ -97,7 +97,7 @@ Hero.prototype.attack = function (enemy) {
     enemy.healthPoints -= damage;
     return `${this.name} struck ${enemy.name} with the ${this.weapons[1]} of Truth! ${message} ${enemy.name} lost ${damage} health points.`;
   } else if (attack === 2) {
-    if (criticalHit() === 5) {
+    if (randomNum(5) === 4) {
       damage = 20;
       message = `Critical Hit!`
     } else {
@@ -117,9 +117,9 @@ function Villain (attrs) {
 }
 Villain.prototype = Object.create(Humanoid.prototype);
 Villain.prototype.attack = function (enemy) {
-  let attack = decideAttack();
+  let attack = randomNum(3);
   if (attack === 0) {
-    if (criticalHit() === 2) {
+    if (randomNum(5) === 2) {
       damage = 15;
       message = `Critical Hit!`
     } else {
@@ -129,7 +129,7 @@ Villain.prototype.attack = function (enemy) {
     enemy.healthPoints -= damage;
     return `${this.name} struck ${enemy.name} with the Fire ${this.weapons[0]}! ${message} ${enemy.name} lost ${damage} health points.`;
   } else if (attack === 1) {
-    if (criticalHit() === 2) {
+    if (randomNum(5) === 0) {
       damage = 10;
       message = `Critical Hit!`
     } else {
@@ -139,7 +139,7 @@ Villain.prototype.attack = function (enemy) {
     enemy.healthPoints -= damage;
     return `${this.name} struck ${enemy.name} with the Poison ${this.weapons[1]}! ${message} ${enemy.name} lost ${damage} health points.`;
   } else if (attack === 2) {
-    if (criticalHit() === 2) {
+    if (randomNum(5) === 4) {
       damage = 20;
       message = `Critical Hit!`
     } else {
@@ -153,21 +153,14 @@ Villain.prototype.attack = function (enemy) {
     return "ERROR";
   }
 }
-
-function criticalHit () {
-  return Math.floor(Math.random() * 5);
-}
-function decideAttack () {
-  return Math.floor(Math.random() * 3);
-}
-function coinFlip () {
-  return Math.floor(Math.random() * 2);
+function randomNum (num) {
+  return Math.floor(Math.random() * num);
 }
 
 function duel (hero, villain) {
   let first;
   let second;
-  if (coinFlip() === 0) {
+  if (randomNum(2) === 0) {
     first = hero;
     second = villain;
     console.log()
