@@ -178,6 +178,8 @@ function duel (hero, villain) {
     second = hero;
   }
   console.log(`-----${first.name} VS ${second.name}-----`);
+  first.sayHealthPoints();
+  second.sayHealthPoints();
   do {
     if (first.alive) {
       console.log(first.attack(second));
